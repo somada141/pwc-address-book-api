@@ -8,6 +8,7 @@ from . import utils
 from . import sql
 from . import excs
 from . import schemata
+from . import orm_base
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
