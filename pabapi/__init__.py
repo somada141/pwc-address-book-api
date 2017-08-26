@@ -4,6 +4,7 @@
 
 import config
 import loggers
+import utils
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
