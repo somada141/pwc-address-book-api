@@ -8,7 +8,7 @@ import ujson
 import validictory
 import attrdict
 
-import excs
+from . import excs
 
 config_schema_default = {
     "type": "object",

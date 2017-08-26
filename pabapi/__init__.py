@@ -2,9 +2,9 @@
 
 """Top-level package for pwc-address-book-api."""
 
-import config
-import loggers
-import utils
+from . import config
+from . import loggers
+from . import utils
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
