@@ -5,6 +5,7 @@
 from . import config
 from . import loggers
 from . import utils
+from . import sql
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
