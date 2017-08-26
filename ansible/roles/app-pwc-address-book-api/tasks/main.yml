@@ -1,0 +1,95 @@
+---
+
+- name: Update apt cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 86400
+  ignore_errors: true
+
+- name: Install apt dependencies.
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ app_pwc_address_book_api.dependencies_apt }}"
+
+- name: Create service group.
+  group:
+    state: present
+    name: "{{ app_pwc_address_book_api.group }}"
+
+- name: Create service user.
+  user:
+    state: present
+    name: "{{ app_pwc_address_book_api.user }}"
+    createhome: yes
+    group: "{{ app_pwc_address_book_api.group }}"
+    shell: "/bin/false"
+
+- name: Create application directories.
+  file:
+    state: directory
+    path: "{{ item }}"
+    owner: "{{ app_pwc_address_book_api.user }}"
+    mode: 0755
+  with_items:
+    - "{{ app_pwc_address_book_api.share_dir }}"
+    - "{{ app_pwc_address_book_api.config_dir }}"
+    - "{{ app_pwc_address_book_api.run_dir }}"
+    - "{{ app_pwc_address_book_api.log_dir }}"
+
+- name: Install system-level Python dependencies
+  pip:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - pip==9.0.1
+    - setuptools==36.2.7
+    - virtualenv==15.1.0
+
+- name: Install deployment-level pip dependencies not included in a `requirements.txt` within the virtual environment
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: "{{ app_pwc_address_book_api.virtual_env_dir }}"
+    virtualenv_python: python2.7
+  with_items: "{{ app_pwc_address_book_api.dependencies_pip }}"
+
+- name: Checkout the project source code from Git
+  git:
+    repo: "https://github.com/somada141/pwc-address-book-api.git"
+    dest: "{{ app_pwc_address_book_api.share_dir }}/src"
+    depth: 1
+    force: yes
+  when: app_pwc_address_book_api.is_vagrant is not defined or app_pwc_address_book_api.is_vagrant == False
+
+- name: Create configuration file
+  template:
+    src: "config.json.j2"
+    dest: "{{ app_pwc_address_book_api.config_dir }}/pwc-address-book-api.json"
+    owner: "{{ app_pwc_address_book_api.user }}"
+    group: "{{ app_pwc_address_book_api.group }}"
+    mode: 0600
+
+- name: Install Python package requirements (Production)
+  pip:
+    chdir: "{{ app_pwc_address_book_api.share_dir }}/src/"
+    requirements: requirements.txt
+    state: present
+    virtualenv: "{{ app_pwc_address_book_api.virtual_env_dir }}"
+    virtualenv_python: python2.7
+  when: app_pwc_address_book_api.is_vagrant is not defined or app_pwc_address_book_api.is_vagrant == False
+
+- name: Install Python package requirements (Vagrant)
+  pip:
+    chdir: "/home/vagrant/pwc-address-book-api"
+    requirements: requirements.txt
+    state: present
+    virtualenv: "{{ app_pwc_address_book_api.virtual_env_dir }}"
+    virtualenv_python: python2.7
+  when: app_pwc_address_book_api.is_vagrant is defined and app_pwc_address_book_api.is_vagrant == True
+
+- name: Create init script for the `pwc-address-book-api` service
+  template: src=pwc-address-book-api.conf.j2 dest=/etc/init/pwc-address-book-api.conf
+  notify:
+    - restart pwc-address-book-api
+  when: app_pwc_address_book_api.is_vagrant is not defined or app_pwc_address_book_api.is_vagrant == False

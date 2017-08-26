@@ -1,0 +1,49 @@
+---
+
+# MySQL Server Databases.
+mysql_databases:
+  - name: pab
+    collation: utf8mb4_general_ci
+    encoding: utf8mb4
+    replicate: 0
+
+# MySQL Server Users.
+mysql_users:
+  - name: pabapi
+    host: "%"
+    password: 7zuq2YMn1vTu0EfEJPxtB3FWLeiW9Y
+    priv: "pab.*:ALL"
+
+app_pwc_address_book_api:
+
+  # Application user settings.
+  user: pwc-address-book-api
+  group: pwc-address-book
+
+  # Application directories.
+  config_dir: /etc/pwc-address-book-api
+  share_dir: /usr/local/share/pwc-address-book-api
+  run_dir: /var/run/pwc-address-book-api
+  log_dir: /var/log/pwc-address-book-api
+  virtual_env_dir: /usr/local/share/pwc-address-book-api/venvs/pwc-address-book-api
+
+  # Gunicorn Configuration Settings.
+  gunicorn:
+    host: "0.0.0.0"
+    port: 5555
+    workers: 4
+    worker_class: sync
+
+  # Application Configuration Settings.
+  config:
+
+    # General Settings.
+    logger_level: DEBUG
+
+    # SQL Server Configuration Settings.
+    sql_host: "localhost"
+    sql_port: 3306
+    sql_username: "pabapi"
+    sql_password: "7zuq2YMn1vTu0EfEJPxtB3FWLeiW9Y"
+    sql_db: "pab"
+
