@@ -9,6 +9,7 @@ from . import sql
 from . import excs
 from . import schemata
 from . import orm_base
+from . import orm
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
