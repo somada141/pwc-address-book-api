@@ -28,7 +28,7 @@ class Contact(Base, OrmBase):
     )
 
     email = sqlalchemy.Column(
-        sqlalchemy.dialects.mysql.VARCHAR(length=255),
+        sqlalchemy.dialects.mysql.VARCHAR(length=180),
         unique=True,
         nullable=False
     )
