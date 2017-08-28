@@ -19,22 +19,24 @@ class BoilerplateSql(object):
             and driver to be used for the connection.
     """
 
-    def __init__(self,
-                 sql_user,
-                 sql_password,
-                 sql_host,
-                 sql_port,
-                 sql_dbname,
-                 sql_url_template=("mysql+mysqldb://{user}:{password}@{host}:"
-                                   "{port}/{db}?charset=utf8mb4"),
-                 **kwargs):
+    def __init__(
+        self,
+        sql_username,
+        sql_password,
+        sql_host,
+        sql_port,
+        sql_db,
+        sql_url_template=("mysql+mysqldb://{username}:{password}@"
+                          "{host}:{port}/{db}?charset=utf8mb4"),
+        **kwargs
+    ):
         """Initializes database connection and session"""
 
-        self.sql_user = sql_user
+        self.sql_username = sql_username
         self.sql_password = sql_password
         self.sql_host = sql_host
         self.sql_port = sql_port
-        self.sql_dbname = sql_dbname
+        self.sql_db = sql_db
         self.sql_url_template = sql_url_template
 
         # Inspecting the presence of keyword arguments and (should they not be
@@ -63,11 +65,11 @@ class BoilerplateSql(object):
         # information provided upon instantiation.
         url = self.sql_url_template
         url = url.format(
-            user=self.sql_user,
+            username=self.sql_username,
             password=self.sql_password,
             host=self.sql_host,
             port=self.sql_port,
-            db=self.sql_dbname
+            db=self.sql_db
         )
 
         return url
