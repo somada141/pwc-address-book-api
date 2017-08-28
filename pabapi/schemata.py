@@ -70,3 +70,30 @@ def validate_parameters():
         return func(*args, **kwargs)
 
     return wrapper
+
+
+schema_TapPab_get_contact_by_email = {
+    "type": "object",
+    "required": [
+        "contact_email"
+    ],
+    "properties": {
+        "contact_email": {"type": "string"},
+    },
+}
+
+schema_TapPab_has_contact_by_email = schema_TapPab_get_contact_by_email
+
+schema_TapPab_add_contact = {
+    "type": "object",
+    "required": [
+        "contact_name"
+        "contact_email"
+    ],
+    "properties": {
+        "contact_name": {"type": "string"},
+        "contact_email": {"type": "string"},
+    },
+}
+
+schema_TapPab_update_contact = schema_TapPab_add_contact

@@ -10,6 +10,7 @@ from . import excs
 from . import schemata
 from . import orm_base
 from . import orm
+from . import dbtaps
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
