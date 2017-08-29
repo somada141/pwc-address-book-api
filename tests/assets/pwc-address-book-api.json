@@ -1,0 +1,8 @@
+{
+    "logger_level": "CRITICAL",
+    "sql_db": "test",
+    "sql_host": "localhost",
+    "sql_password": "2wk0mC49a7RWuxvSN2aw3REo83IHgz",
+    "sql_port": 3306,
+    "sql_username": "test"
+}
