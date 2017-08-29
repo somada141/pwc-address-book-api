@@ -2,17 +2,25 @@
 
 # MySQL Server Databases.
 mysql_databases:
-  - name: pab
-    collation: utf8mb4_general_ci
-    encoding: utf8mb4
+  - name: "pab"
+    collation: "utf8mb4_general_ci"
+    encoding: "utf8mb4"
+    replicate: 0
+  - name: "test"
+    collation: "utf8mb4_general_ci"
+    encoding: "utf8mb4"
     replicate: 0
 
 # MySQL Server Users.
 mysql_users:
-  - name: pabapi
+  - name: "pabapi"
     host: "%"
-    password: 7zuq2YMn1vTu0EfEJPxtB3FWLeiW9Y
+    password: "7zuq2YMn1vTu0EfEJPxtB3FWLeiW9Y"
     priv: "pab.*:ALL"
+  - name: "test"
+    host: "%"
+    password: "2wk0mC49a7RWuxvSN2aw3REo83IHgz"
+    priv: "test.*:ALL"
 
 app_pwc_address_book_api:
 
