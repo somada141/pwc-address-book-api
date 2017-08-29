@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.network :forwarded_port, guest: 22, host: 2401, id: "ssh", auto_correct: false
     config.vm.network :forwarded_port, guest: 3306, host: 3306, id: "mysql", auto_correct: false
-    config.vm.network :forwarded_port, guest: 8888, host: 8888, id: "api", auto_correct: false
+    config.vm.network :forwarded_port, guest: 8000, host: 8000, id: "api", auto_correct: false
     config.vm.network :forwarded_port, guest: 5555, host: 5555, id: "gunicorn", auto_correct: false
 
     # provision with Ansible
