@@ -70,12 +70,15 @@ def validate_config(config_instance, config_schema=None):
     if config_schema is None:
         config_schema = config_schema_default
 
-    validictory.validate(
-        data=config_instance,
-        schema=config_schema,
-        required_by_default=False,
-        blank_by_default=True
-    )
+    try:
+        validictory.validate(
+            data=config_instance,
+            schema=config_schema,
+            required_by_default=False,
+            blank_by_default=True
+        )
+    except Exception as exc:
+        raise excs.ConfigFileInvalid(exc.message)
 
     return True
 
