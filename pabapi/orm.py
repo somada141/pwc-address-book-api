@@ -31,13 +31,3 @@ class Contact(Base, OrmBase):
         unique=True,
         nullable=False
     )
-
-    added = sqlalchemy.Column(
-        sqlalchemy.dialects.mysql.DATETIME(),
-        nullable=False
-    )
-
-    updated = sqlalchemy.Column(
-        sqlalchemy.dialects.mysql.DATETIME(),
-        nullable=False
-    )
