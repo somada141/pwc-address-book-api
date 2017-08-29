@@ -14,7 +14,6 @@ from .orm_base import Base, OrmBase
 class Contact(Base, OrmBase):
     # set table name
     __tablename__ = "contacts"
-    __table_args__ = {"schema": "pab"}
 
     contact_id = sqlalchemy.Column(
         sqlalchemy.dialects.mysql.INTEGER(display_width=11, unsigned=True),
