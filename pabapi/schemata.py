@@ -96,4 +96,4 @@ schema_TapPab_add_contact = {
     },
 }
 
-schema_TapPab_update_contact = schema_TapPab_add_contact
+schema_TapPab_update_contact_name = schema_TapPab_add_contact
