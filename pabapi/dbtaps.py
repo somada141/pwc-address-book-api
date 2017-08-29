@@ -86,7 +86,7 @@ class TapPab(sql.BoilerplateSql):
 
             session.flush([contact_obj])
 
-        return contact_obj.id
+        return contact_obj
 
     @schemata.validate_parameters()
     def update_contact_name(self, contact_email, contact_name):
@@ -104,5 +104,5 @@ class TapPab(sql.BoilerplateSql):
 
             session.merge(contact_obj)
 
-        return contact_obj.id
+        return contact_obj
 
