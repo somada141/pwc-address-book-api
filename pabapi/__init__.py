@@ -4,7 +4,6 @@
 
 from . import config
 from . import loggers
-from . import utils
 from . import sql
 from . import excs
 from . import schemata
