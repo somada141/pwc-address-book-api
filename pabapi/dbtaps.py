@@ -15,18 +15,18 @@ from . import excs
 class TapPab(sql.BoilerplateSql):
     def __init__(
         self,
+        sql_username,
+        sql_password,
         sql_host,
         sql_port,
-        sql_user,
-        sql_password,
         sql_db,
         **kwargs
     ):
         super(TapPab, self).__init__(
+            sql_username=sql_username,
+            sql_password=sql_password,
             sql_host=sql_host,
             sql_port=sql_port,
-            sql_user=sql_user,
-            sql_password=sql_password,
             sql_db=sql_db,
             **kwargs
         )
