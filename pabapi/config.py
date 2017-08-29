@@ -14,12 +14,12 @@ config_schema_default = {
     "type": "object",
     "required": [
         # General Settings.
-        "log_level",
+        "logger_level",
         # SQL Server Configuration Settings.
         "sql_host", "sql_port", "sql_username", "sql_password", "sql_db"
     ],
     "properties": {
-        "log_level": {
+        "logger_level": {
             "type": "string",
             "description": ("The minimum level of `logging` messages that will "
                             "be emitted"),
