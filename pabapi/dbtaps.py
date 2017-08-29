@@ -37,7 +37,7 @@ class TapPab(sql.BoilerplateSql):
             logger_level=kwargs.get(str("logger_level"), str("DEBUG"))
         )
 
-        Base.metadata.create_all()
+        Base.metadata.create_all(self.engine)
 
     @schemata.validate_parameters()
     def get_contact_by_email(self, contact_email):
