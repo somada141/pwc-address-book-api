@@ -80,7 +80,6 @@ class TapPab(sql.BoilerplateSql):
             contact_obj = Contact()
             contact_obj.email = contact_email
             contact_obj.name = contact_name
-            contact_obj.added = contact_obj.updated = datetime.datetime.utcnow()
 
             session.add(contact_obj)
 
@@ -100,7 +99,6 @@ class TapPab(sql.BoilerplateSql):
                 raise excs.RecordDoesNotExist(msg_fmt)
 
             contact_obj.name = contact_name
-            contact_obj.updated = datetime.datetime.utcnow()
 
             session.merge(contact_obj)
 
