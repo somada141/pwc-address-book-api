@@ -1,22 +1,126 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `pabapi` package."""
+"""Tests for `pabapi.py` module."""
 
+from __future__ import unicode_literals
 
-import unittest
+from falcon import testing
+import ujson
 
 from pabapi import pabapi
 
+from . import utils
 
-class TestPabapi(unittest.TestCase):
-    """Tests for `pabapi` package."""
 
+class TestPabApi(testing.TestCase):
     def setUp(self):
-        """Set up test fixtures, if any."""
+        super(TestPabApi, self).setUp()
+
+        self.app = pabapi.build_app(
+            path_config_file=utils.get_test_config_path()
+        )
+
+        self.tap = utils.setup_db()
 
     def tearDown(self):
-        """Tear down test fixtures, if any."""
+        utils.teardown_db(tap=self.tap)
 
-    def test_000_something(self):
-        """Test something."""
+    def test_get_ping(self):
+        response_refr = {"status": "OK"}
+
+        response_eval = self.simulate_get(path="/ping").json
+
+        self.assertEqual(response_refr, response_eval)
+
+    def test_post_contacts_get(self):
+        response_refr = [
+            {
+                "contact_id": 1,
+                "email": "john@doe.com",
+                "name": "John Doe",
+            },
+            {
+                "contact_id": 2,
+                "email": "jane@doe.com",
+                "name": "Jane Doe"
+            },
+        ]
+
+        response_eval = self.simulate_post(path="/contacts/get").json
+
+        self.assertEqual(response_refr, response_eval)
+
+    def test_post_contacts_add(self):
+        request_params = {
+            "contacts": [
+                {
+                    "name": "Jimmy Doe",
+                    "email": "jimmy@doe.com"
+                }
+            ]
+        }
+        request_body = ujson.dumps(request_params)
+
+        response_refr = {
+            "contacts": {
+                "accepted": [
+                    {
+                        "email": "jimmy@doe.com",
+                        "name": "Jimmy Doe"
+                    }
+                ],
+                "rejected": []
+            },
+            "records": [
+                {
+                    "contact_id": 3,
+                    "email": "jimmy@doe.com",
+                    "name": "Jimmy Doe"
+                }
+            ]
+        }
+
+        response_eval = self.simulate_post(
+            path="/contacts/add",
+            body=request_body
+        ).json
+
+        self.assertEqual(response_refr, response_eval)
+
+    def test_post_contacts_update(self):
+        request_params = {
+            "contacts": [
+                {
+                    "name": "Jane Deer",
+                    "email": "jane@doe.com"
+                }
+            ]
+        }
+        request_body = ujson.dumps(request_params)
+
+        response_refr = {
+            "contacts": {
+                "accepted": [
+                    {
+                        "email": "jane@doe.com",
+                        "name": "Jane Deer"
+                    }
+                ],
+                "rejected": []
+            },
+            "records": [
+                {
+                    "contact_id": 2,
+                    "email": "jane@doe.com",
+                    "name": "Jane Deer"
+                }
+            ]
+        }
+
+        response_eval = self.simulate_post(
+            path="/contacts/update",
+            body=request_body
+        ).json
+
+        self.assertEqual(response_refr, response_eval)
