@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 
 import falcon
+import falcon_multipart.middleware
 
 from . import config
 from . import loggers
@@ -31,7 +32,9 @@ def build_app(path_config_file, *args, **kwargs):
     )
 
     # falcon.API instances are callable WSGI apps
-    app = falcon.API()
+    app = falcon.API(
+        middleware=[falcon_multipart.middleware.MultipartMiddleware()]
+    )
 
     msg_fmt = u"Initializing API resources"
     logger.info(msg_fmt)
@@ -50,6 +53,10 @@ def build_app(path_config_file, *args, **kwargs):
             logger_level=cfg.logger_level,
         ),
         '/contacts/update': resources.ResourceContactsUpdate(
+            dbtap=dbtap,
+            logger_level=cfg.logger_level,
+        ),
+        '/upload': resources.ResourceUploadCsv(
             dbtap=dbtap,
             logger_level=cfg.logger_level,
         ),
