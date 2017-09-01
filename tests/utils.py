@@ -6,11 +6,12 @@ import os
 
 import pabapi
 
+file_path = os.path.abspath(__file__)
+dir_path = os.path.dirname(file_path)
+dir_path_assets = os.path.join(dir_path, "assets")
+
 
 def get_test_config_path():
-    file_path = os.path.abspath(__file__)
-    dir_path = os.path.dirname(file_path)
-    dir_path_assets = os.path.join(dir_path, "assets")
 
     path_config_file = os.path.join(
         dir_path_assets,
@@ -18,6 +19,16 @@ def get_test_config_path():
     )
 
     return path_config_file
+
+
+def get_test_csv_path():
+
+    path_csv_file = os.path.join(
+        dir_path_assets,
+        "contacts.csv"
+    )
+
+    return path_csv_file
 
 
 def setup_db():

@@ -6,6 +6,7 @@
 from __future__ import unicode_literals
 
 import unittest
+import validictory
 
 import pabapi
 
@@ -117,3 +118,11 @@ class TestTapPab(unittest.TestCase):
         self.assertIn("contact_id='1'", contact_string_eval)
         self.assertIn("name='John Doe'", contact_string_eval)
         self.assertIn("email='john@doe.com'", contact_string_eval)
+
+    def test_schema_invalid_arguments(self):
+
+        self.assertRaises(
+            validictory.FieldValidationError,
+            self.tap.has_contact_by_email,
+            contact_email=1,
+        )
