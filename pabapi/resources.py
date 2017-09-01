@@ -35,8 +35,8 @@ class ResourceBase(object):
             validictory.validate(
                 data=parameters,
                 schema=self.schema,
-                required_by_default=False,
-                blank_by_default=True
+                required_by_default=True,
+                blank_by_default=False
             )
         except Exception as exc:
             msg_fmt = "Invalid parameters provided."
