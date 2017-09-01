@@ -3,10 +3,12 @@
 from __future__ import unicode_literals
 
 import abc
+import io
 
 import falcon
 import ujson
 import validictory
+import unicodecsv
 
 from . import loggers
 from . import excs
@@ -353,6 +355,138 @@ class ResourceContactsUpdate(ResourceContactManipulationBase):
         self.logger.info(msg_fmt)
 
         response = self.prepare_response(response=response, results=results)
+
+        return response
+
+    def on_post(self, request, response):
+        return self.execute(request=request, response=response)
+
+
+class ResourceUploadCsv(object):
+    def __init__(self, **kwargs):
+        # Create class-level logger.
+        self.logger = loggers.create_logger(
+            logger_name=type(self).__name__,
+            logger_level=kwargs.get(str("logger_level"), str("DEBUG"))
+        )
+
+    @staticmethod
+    def read_file_multipart(request):
+
+        file_uploaded = request.get_param("file")
+        file_obj = file_uploaded.file
+        file_name = file_uploaded.filename
+
+        return file_obj, file_name
+
+    @staticmethod
+    def read_file_raw(request):
+
+        file_content = request.stream.read()
+
+        file_obj = io.StringIO()
+        file_obj.write(file_content.decode())
+        file_obj.seek(0)
+
+        file_name = ""
+
+        return file_obj, file_name
+
+    def read_uploaded_file(self, request):
+
+        try:
+            if request.get_param("file"):
+                file_obj, file_name = self.read_file_multipart(request=request)
+            else:
+                file_obj, file_name = self.read_file_raw(request=request)
+        except Exception as exc:
+            msg_fmt = "Could not upload file."
+            self.logger.exception(msg_fmt)
+            raise falcon.HTTPError(
+                status=falcon.HTTP_400,
+                title="FileUploadFailure",
+                description=msg_fmt + " Exception: {0}.".format(exc.message)
+            )
+
+        try:
+            # (Ensure we can) read the file content.
+            file_content = file_obj.read()
+            # Rewind the file so it can be read by the `unicodecsv` package.
+            file_obj.seek(0)
+        except Exception as exc:
+            msg = "Could not read content of uploaded file '{0}'."
+            msg_fmt = msg.format(file_name)
+            self.logger.exception(msg_fmt)
+            raise falcon.HTTPError(
+                status=falcon.HTTP_400,
+                title="InvalidFileUploaded",
+                description=msg_fmt + " Exception: {0}.".format(exc.message)
+            )
+
+        return file_name, file_content, file_obj
+
+    def prepare_response(self, response, results):
+
+        try:
+            response_json = ujson.dumps(results)
+        except Exception as exc:
+            msg = "Could not encode results '{0}' into JSON."
+            msg_fmt = msg.format(results)
+            self.logger.exception(msg_fmt)
+            raise falcon.HTTPError(
+                status=falcon.HTTP_500,
+                title="UnhandledError",
+                description=msg_fmt + " Exception: {0}.".format(exc.message)
+            )
+
+        response.content_type = "application/json"
+        response.body = response_json
+
+        return response
+
+    def read_csv_entries(self, file_name, file_obj):
+
+        try:
+            reader = unicodecsv.DictReader(
+                csvfile=file_obj,
+                fieldnames=["name", "email"]
+            )
+            entries = []
+            for entry in reader:
+                if entry["name"] == "name" or entry["email"] == "email":
+                    continue
+
+                entries.append(entry)
+
+            return entries
+        except Exception as exc:
+            msg_fmt = "Could not read uploaded file '{0}'.".format(file_name)
+            self.logger.exception(msg_fmt)
+            raise falcon.HTTPError(
+                status=falcon.HTTP_400,
+                title="InvalidRequest",
+                description=msg_fmt + " Exception: {0}.".format(exc.message)
+            )
+
+    def execute(self, request, response):
+
+        msg_fmt = "Processing 'upload_csv' request."
+        self.logger.info(msg_fmt)
+
+        file_name, file_content, file_obj = self.read_uploaded_file(
+            request=request
+        )
+
+        msg_fmt = "Processing CSV file '{0}'.".format(file_name)
+        self.logger.info(msg_fmt)
+
+        entries = self.read_csv_entries(file_name=file_name, file_obj=file_obj)
+
+        msg = "Processed CSV file '{0}' yielded {1} entries."
+        msg_fmt = msg.format(file_name, len(entries))
+        self.logger.info(msg_fmt)
+
+        response = self.prepare_response(response=response, results=entries)
 
         return response
 
