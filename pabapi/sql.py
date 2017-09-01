@@ -13,7 +13,7 @@ import sqlalchemy.orm
 
 
 class BoilerplateSql(object):
-    """Basic Python boilerplate for interaction with an SQL database
+    """Basic Python boilerplate for interaction with an SQL database.
 
     Attributes:
         sql_user (str): SQL database username

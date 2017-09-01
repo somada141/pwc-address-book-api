@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
-
 from . import loggers
 from . import sql
 from . import schemata
