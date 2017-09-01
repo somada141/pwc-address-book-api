@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 
+""" Application-wide configuration module
+
+This module contains functions to load a JSON configuration file and validate it
+against a JSON schema hardcoded within the module under `config_schema_default`.
+
+Attributes:
+    config_schema_default (dict): The JSON configuration schema defining the
+    structure and content of a valid JSON configuration file.
+"""
+
 from __future__ import unicode_literals
 
 import os
@@ -10,6 +20,7 @@ import attrdict
 
 from . import excs
 
+# JSON schema for the incoming configuration.
 config_schema_default = {
     "type": "object",
     "required": [
@@ -52,6 +63,17 @@ config_schema_default = {
 
 
 def load_config_file(fname_config_file):
+    """ Loads a JSON configuration file and returns its contents as a dict.
+
+    Args:
+        fname_config_file (str, unicode): The path to the JSON configuration
+            file.
+
+    Returns:
+        dict: The loaded configuration dictionary.
+    """
+
+    # Ensure the provided path is a valid existing file.
     if (
             not os.path.exists(fname_config_file) or
             not os.path.isfile(fname_config_file)
@@ -60,6 +82,7 @@ def load_config_file(fname_config_file):
         msg_fmt = msg.format(fname_config_file)
         raise excs.ConfigFileNotFound(msg_fmt)
 
+    # Read the JSON file.
     with open(fname_config_file, str("r")) as finp:
         config = ujson.load(finp)
 
@@ -67,16 +90,34 @@ def load_config_file(fname_config_file):
 
 
 def validate_config(config_instance, config_schema=None):
+    """ Validates a configuration dict against a JSON schema.
+
+    Args:
+        config_instance (str, unicode): The configuration dictionary instance.
+        config_schema (dict, optional): The configuration JSON schema in the
+            form of a `dict`. Defaults to `None` in which case the
+            `config_schema_default` is used.
+
+    Returns:
+        bool: `True` if `config_instance` validates against the schema.
+    """
+
+    # Use `config_schema_default` if no schema was provided.
     if config_schema is None:
         config_schema = config_schema_default
 
+    # Perform the validation of the provided configuration against the schema
+    # and raise an exception if it fails.
     try:
+        # Perform the validation.
         validictory.validate(
             data=config_instance,
             schema=config_schema,
             required_by_default=False,
             blank_by_default=True
         )
+    # catch any exception resulting from the validation and wrap it in the
+    # custom `excs.ConfigFileInvalid` exception.
     except Exception as exc:
         raise excs.ConfigFileInvalid(exc.message)
 
@@ -84,8 +125,29 @@ def validate_config(config_instance, config_schema=None):
 
 
 def import_config(fname_config_file):
+    """ Loads and validates a JSON configuration file.
+
+    This method uses the `load_config_file` and `validate_config` functions to
+    load a JSON configuration file and validate against the
+    `config_schema_default` returning the validates configuration as an
+    `attrdict.AttrDict`.
+
+    Args:
+        fname_config_file (str, unicode): The path to the JSON configuration
+            file.
+
+    Returns:
+        attrdict.AttrDict: The imported configuration `AttrDict`.
+    """
+
+    # Load the JSON configuration file.
     config = load_config_file(fname_config_file=fname_config_file)
 
-    validate_config(config_instance=config, config_schema=config_schema_default)
+    # Validate the loaded `dict` against the `config_schema_default` JSON
+    # schema.
+    validate_config(
+        config_instance=config,
+        config_schema=config_schema_default
+    )
 
     return attrdict.AttrDict(config)
