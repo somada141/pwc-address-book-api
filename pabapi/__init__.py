@@ -10,6 +10,8 @@ from . import schemata
 from . import orm_base
 from . import orm
 from . import dbtaps
+from . import resources
+from . import pabapi
 
 __author__ = """Adamos Kyriakou"""
 __email__ = 'somada141@gmail.com'
