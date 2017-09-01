@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+""" Boilerplate SQLAlchemy to MySQL-server interaction module.
+
+This module contains the `BoilerplateSql` class which is meant to facilitate
+safe interaction between SQLAlchemy and MySQL-servers.
+"""
+
 import contextlib
 
 import sqlalchemy
@@ -9,7 +15,7 @@ import sqlalchemy.orm
 class BoilerplateSql(object):
     """Basic Python boilerplate for interaction with an SQL database
 
-    Parameters:
+    Attributes:
         sql_user (str): SQL database username
         sql_password (str): SQL database password
         sql_host (str): SQL database hostname
@@ -32,6 +38,7 @@ class BoilerplateSql(object):
     ):
         """Initializes database connection and session"""
 
+        # Internalize arguments.
         self.sql_username = sql_username
         self.sql_password = sql_password
         self.sql_host = sql_host
@@ -49,10 +56,10 @@ class BoilerplateSql(object):
         self.mysqldb_sscursor = kwargs.get("mysqldb_sscursor", False)
         self.expire_on_commit = kwargs.get("expire_on_commit", False)
 
-        # create DB engine
+        # create DB engine.
         self.engine = self.connect()
 
-        # create new session
+        # create new session.
         self.session_factory = sqlalchemy.orm.sessionmaker(
             bind=self.engine,
             expire_on_commit=self.expire_on_commit
@@ -77,7 +84,7 @@ class BoilerplateSql(object):
     def connect(self, url=None):
         """Connects to the database and returns the SQLAlchemy engine
 
-        Parameters:
+        Args:
             url (str): The database URL.
 
         Returns:
@@ -105,7 +112,7 @@ class BoilerplateSql(object):
     def session_scope(self, expunge_objects=True, refresh_objects=False):
         """Provide a transactional scope around a series of operations
 
-        Parameters:
+        Args:
             expunge_objects (bool, optional): Mark objects as detached from this
                 session. Objects can then be read after the session terminates.
                 Defaults to `True`.
