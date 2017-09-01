@@ -31,9 +31,10 @@ def create_logger(
 
     # Assemble the logging format.
     fmt_tmpl = ("{0}: %(process)d %(processName)s %(asctime)-15s "
-                "%(levelname)-8s %(name)-10s %(message)s")
+                "%(levelname)-8s %(name)-10s %(funcName)s %(message)s")
     fmt = fmt_tmpl.format(project_name)
 
+    # Create a colourful formatter (should one be needed).
     formatter_w_color = colorlog.ColoredFormatter(
         fmt="%(log_color)s" + fmt,
         datefmt="%Y-%m-%dT%H:%M:%SZ",
