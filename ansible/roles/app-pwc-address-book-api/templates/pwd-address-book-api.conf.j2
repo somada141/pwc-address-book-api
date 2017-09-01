@@ -1,0 +1,28 @@
+description "pwc-address-book-api service"
+
+# conditions in which this service should be automatically started
+# run levels 2345 cover all of the "system is actually up" states.
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+# restart service if it terminates in an unclean way, i.e., not in the `service $name stop` way
+respawn
+
+# limit respawn to 100 times in a 10 second period, then backoff.
+# a service that has a syntax error shouldnt spin at infinite speed forever.
+respawn limit 100 10
+
+# create appropriate /var/run/pwc-address-book-api directory to store the service .pid
+# this will account for server-restarts when the deployed `run` dirs get wiped.
+pre-start script
+    mkdir -p {{ app_pwc_address_book_api.run_dir }}
+    chown -R {{ app_pwc_address_book_api.group }}:{{ app_pwc_address_book_api.user }} {{ app_pwc_address_book_api.run_dir }}
+end script
+
+## we call the program "start-stop-daemon" with some sane arguments (change user id to service user (no root services please), make a pid file, and change the working directory)
+## the --exec argument to start-stop-daemon is the actual process we'd like to call
+## any arguments to the service itself can be added after this declaration, but be sure to provide a "--" to separate arguments to the exec'd file as opposed to start-stop-daemon
+script
+    . {{ app_pwc_address_book_api.virtual_env_dir }}/bin/activate
+    exec start-stop-daemon --start --chuid {{ app_pwc_address_book_api.user }} --make-pidfile --pidfile {{ app_pwc_address_book_api.run_dir }}/pwc-address-book-api.pid --chdir {{ app_pwc_address_book_api.share_dir }}/src/pabapi --exec {{ app_postie_worker.virtual_env_dir }}/bin/gunicorn -- --bind {{ app_pwc_address_book_api.gunicorn.host }}:{{ app_pwc_address_book_api.gunicorn.port }} --workers {{ app_pwc_address_book_api.gunicorn.workers }} --worker-class {{ app_pwc_address_book_api.gunicorn.worker_class }} --timeout 300 "pabapi.pabapi:build_app('{{ app_pwc_address_book_api.config_dir }}/pwc-address-book-api.json')"
+end script

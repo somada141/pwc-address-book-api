@@ -1,0 +1,20 @@
+---
+
+app_pwc_address_book_api:
+
+  dependencies_apt:
+    - build-essential
+    - python-dev
+    - python-pip
+    - libxslt1-dev
+    - libxml2-dev
+    - libssl-dev
+    - libffi-dev
+    - python-lxml
+    - libmysqlclient-dev
+    - python-mysqldb
+
+  dependencies_pip:
+    - ipython==5.3.0
+    - gunicorn==19.7.1
+
