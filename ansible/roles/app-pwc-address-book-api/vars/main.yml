@@ -26,7 +26,7 @@ app_pwc_address_book_api:
 
   # Application user settings.
   user: pwc-address-book-api
-  group: pwc-address-book
+  group: pwc-address-book-api
 
   # Application directories.
   config_dir: /etc/pwc-address-book-api
