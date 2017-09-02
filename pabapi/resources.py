@@ -395,7 +395,7 @@ class ResourceUploadCsv(object):
     def read_uploaded_file(self, request):
 
         try:
-            if request.get_param("file"):
+            if request.get_param("file") is not None:
                 file_obj, file_name = self.read_file_multipart(request=request)
             else:
                 file_obj, file_name = self.read_file_raw(request=request)
