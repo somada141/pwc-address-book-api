@@ -33,7 +33,10 @@ requirements = [
     'falcon-multipart==0.2.0',
 ]
 
-setup_requirements = []
+setup_requirements = [
+    'docutils==0.12',
+    'sphinxcontrib-napoleon==0.6.1',
+]
 
 test_requirements = [
     'coverage',
