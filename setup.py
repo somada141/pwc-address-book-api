@@ -33,7 +33,10 @@ requirements = [
     'falcon-multipart==0.2.0',
 ]
 
-setup_requirements = []
+setup_requirements = [
+    'docutils==0.12',
+    'sphinxcontrib-napoleon==0.6.1',
+]
 
 test_requirements = [
     'coverage',
@@ -42,7 +45,7 @@ test_requirements = [
 
 setup(
     name='pabapi',
-    version='0.1.0',
+    version='0.2.0',
     description=("API backend for a simple address book implemented for the "
                  "PwC interview process."),
     long_description=readme + '\n\n' + history,
