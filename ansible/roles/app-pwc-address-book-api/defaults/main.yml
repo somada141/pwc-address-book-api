@@ -3,6 +3,8 @@
 app_pwc_address_book_api:
 
   dependencies_apt:
+    - git
+    - htop
     - build-essential
     - python-dev
     - python-pip
