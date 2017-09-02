@@ -1,0 +1,2 @@
+- name: restart pwc-address-book-api
+  service: name=pwc-address-book-api enabled=yes state=restarted
