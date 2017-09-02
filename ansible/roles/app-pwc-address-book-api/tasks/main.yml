@@ -56,7 +56,7 @@
 
 - name: Checkout the project source code from Git
   git:
-    repo: "https://github.com/somada141/pwc-address-book-api.git"
+    repo: "git@github.com:somada141/pwc-address-book-api.git"
     dest: "{{ app_pwc_address_book_api.share_dir }}/src"
     depth: 1
     force: yes
