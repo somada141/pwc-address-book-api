@@ -37,7 +37,7 @@ app_pwc_address_book_api:
 
   # Gunicorn Configuration Settings.
   gunicorn:
-    host: "0.0.0.0"
+    host: "127.0.0.1"
     port: 5555
     workers: 4
     worker_class: sync
