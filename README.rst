@@ -29,9 +29,23 @@ The ``app-pwc-address-book-api`` role can be used to provision and deploy the ro
 Deployment
 ----------
 
-Deployment to a remote server can be done via Ansible_ as such:
+Deployment to a remote server can be done via Ansible_ as such::
 
-    ansible-playbook -i path/to/ansible/inventory app-pwc-address-book-api.yaml
+    >>> ansible-playbook -i path/to/ansible/inventory app-pwc-address-book-api.yaml
+
+Configuration
+-------------
+
+The application configuration is defined under the ``vars/main.yml`` file in the Ansible_ role in a YAML format.
+
+Configuration accounts for:
+
+* MySQL Server databases and users along with credentials under the ``mysql_databases`` and ``mysql_users`` respectively. These settings override the defaults ones defined in the ``mysql`` role mentioned prior.
+* Application user/group and directory settings under the ``app_pwc_address_book_api`` key.
+* Gunicorn_ settings determining how the API is served behind Gunicorn_ under the ``app_pwc_address_book_api.gunicorn`` key.
+* Application-specific settings under the ``app_pwc_address_book_api.config`` key.
+
+The application-specific under the ``app_pwc_address_book_api.config`` key are rendered into a JSON file which is in turn used to execute the application (see below).
 
 Development
 -----------
@@ -41,9 +55,9 @@ Setup
 
 This project is entirely developed within a local Vagrant_ VM based on the official ubuntu/trusty64_ base image.
 
-The VM can be spun up through:
+The VM can be spun up through::
 
-    vagrant up
+    >>> vagrant up
 
 Virtual Environment
 ^^^^^^^^^^^^^^^^^^^
@@ -51,22 +65,31 @@ Virtual Environment
 Upon provisioning the application via Ansible_, a virtual-environment is created under the application folder, which
 by default is located under ``/usr/local/share/pwc-address-book-api/venvs/pwc-address-book-api``.
 
-The virtual-environment needs to be activated prior to running, debugging, or testing the application as such:
+The virtual-environment needs to be activated prior to running, debugging, or testing the application as such::
 
-    source /usr/local/share/pwc-address-book-api/venvs/pwc-address-book-api/bin/activate
+    >>> source /usr/local/share/pwc-address-book-api/venvs/pwc-address-book-api/bin/activate
+
+Execution
+^^^^^^^^^
+
+The API application can be executed by switching to the application user, enabling the virtual-environment, and serving the API through Gunicorn_::
+
+    >>> sudo -Hu pwc-address-book-api bash
+    >>> source /usr/local/share/pwc-address-book-api/venvs/pwc-address-book-api/bin/activate
+    >>> PYTHONPATH="/home/vagrant/pwc-address-book-api/" gunicorn --bind 0.0.0.0:8000 "pabapi.pabapi:build_app('/etc/pwc-address-book-api/pwc-address-book-api.json')" --timeout 600
 
 Unit-tests
 ^^^^^^^^^^
 
 Unit-tests for the application have been written under the `tests` subpackage.
 
-These can be executed via the included `Makefile` as such:
+These can be executed via the included `Makefile` as such::
 
-    make test
+    >>> make test
 
-while unit-testing and coverage can be inspected with:
+while unit-testing and coverage can be inspected with::
 
-    make coverage
+    >>> make coverage
 
 Documentation
 ^^^^^^^^^^^^^
@@ -75,9 +98,9 @@ The codebase adheres closely to the Google Python Style Guide (https://google.gi
 
 The project documentation is generated automatically via Sphinx_ using the napoleon_  extension which can parse Google-style docstrings and improve their legibility prior to rendering.
 
-Documentation can be built via the included Makefile as such:
+Documentation can be built via the included Makefile as such::
 
-    make docs
+    >>> make docs
 
 .. _falcon: https://falconframework.org/
 .. _SQLAlchemy: https://www.sqlalchemy.org/
@@ -88,4 +111,5 @@ Documentation can be built via the included Makefile as such:
 .. _napoleon: https://pypi.python.org/pypi/sphinxcontrib-napoleon
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _Gunicorn: http://gunicorn.org/
 
