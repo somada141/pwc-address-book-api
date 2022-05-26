@@ -18,7 +18,7 @@ requirements = [
     'pyOpenSSL==16.2.0',
     'ndg-httpsclient==0.4.0',
     'colorlog==2.10.0',
-    'ujson==1.35',
+    'ujson==5.2.0',
     'validictory==1.1.0',
     'attrdict==2.0.0',
     'decorator==4.1.2',
